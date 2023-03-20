@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "gyver-query"
+version = "0.1.0"
+description = "Query interface extracted from gyver"
+authors = ["Gustavo Cardoso <self.gustavocorrea@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "gyver" }]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+sqlalchemy = "^2.0.7"
+gyver = "^2.0.8"
+
+
+[tool.poetry.group.lint.dependencies]
+black = "^23.1.0"
+autoflake = "^2.0.2"
+isort = "^5.12.0"
+flake8 = "^6.0.0"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
