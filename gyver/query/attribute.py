@@ -45,17 +45,14 @@ class MaybeCache:
     ) -> Callable[[Mapper, str], FieldType]:
         @wraps(func)
         def inner(entity: Mapper, field: str) -> FieldType:
-            if (attr := attr_cache.get((entity, field))) is not None:
+            if (attr := self.get((entity, field))) is not None:
                 return attr
             return self.put((entity, field), func(entity, field))
 
         return inner
 
 
-attr_cache = MaybeCache()
-
-
-@attr_cache
+@MaybeCache()
 def retrieve_attr(entity: Mapper, field: str) -> FieldType:
     is_entity = _is_entity(entity)
     if field == "id" and is_entity:
@@ -75,7 +72,9 @@ def _is_entity(entity: Mapper) -> TypeGuard[type[AbstractEntity]]:
     return isinstance(entity, type) and issubclass(entity, AbstractEntity)
 
 
-def _retrieve_related_field(entity: type[AbstractEntity], field: str) -> FieldType:
+def _retrieve_related_field(
+    entity: type[AbstractEntity], field: str
+) -> FieldType:
     *fields, target_field = field.split(".")
     current_mapper = entity
     for f in fields:
