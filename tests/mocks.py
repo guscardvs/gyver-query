@@ -1,13 +1,9 @@
-from typing import Any
-from typing import Callable
-from typing import Protocol
+from typing import Any, Callable, Protocol
 
 import sqlalchemy as sa
-
 from gyver.database import Entity
 from gyver.database.entity import make_table
-from gyver.database.utils import create_relation_table
-from gyver.database.utils import make_relation
+from gyver.database.utils import create_relation_table, make_relation
 
 
 class Person(Entity):
@@ -48,7 +44,3 @@ mock_table = make_table("mock_table", sa.Column("id", sa.Integer, primary_key=Tr
 
 class HasCompile(Protocol):
     compile: Callable[..., Any]
-
-
-def build_query(query: HasCompile):
-    return str(query.compile(compile_kwargs={"literal_binds": True}))

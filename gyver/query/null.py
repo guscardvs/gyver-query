@@ -1,8 +1,7 @@
 import sqlalchemy as sa
 
-from .typedef import ClauseType
-
 from . import interface
+from .typedef import ClauseType
 
 
 class NullBind(interface.BindClause):

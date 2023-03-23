@@ -14,9 +14,7 @@ def _make_converter(
     def _converter(
         comparator: interface.Comparator[T],
     ) -> interface.Comparator[T]:
-        def _comp(
-            field: interface.FieldType, target: T
-        ) -> interface.SaComparison:
+        def _comp(field: interface.FieldType, target: T) -> interface.SaComparison:
             return comparator(converter(field), target)
 
         return _comp
@@ -34,4 +32,4 @@ def compile_stmt(stmt: CompilerElement) -> str:
     return str(stmt.compile(compile_kwargs={"literal_binds": True}))
 
 
-__all__ = ["as_date", "as_time", "as_lower", "as_upper"]
+__all__ = ["as_date", "as_time", "as_lower", "as_upper", "compile_stmt"]

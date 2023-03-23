@@ -1,14 +1,12 @@
-from abc import ABC
-from abc import abstractmethod
-
-from sqlalchemy.sql import Select
+from abc import ABC, abstractmethod
 
 from gyver.attrs import define
-from .typedef import ClauseType
+from sqlalchemy.sql import Select
 
 from . import comp as cp
-from .interface import ApplyClause
-from .interface import Comparator
+from ._helpers import MockTable
+from .interface import ApplyClause, Comparator
+from .typedef import ClauseType
 from .where import Where
 
 
@@ -38,12 +36,12 @@ class LimitOffsetPaginate(Paginate):
 @define
 class FieldPaginate(Paginate):
     field: str = "id"
-    jump_comparison: Comparator = cp.greater
+    jump_comparison: Comparator[int] = cp.greater
 
     def apply(self, query: Select) -> Select:
         return query.where(
             Where(self.field, self.offset, self.jump_comparison).bind(
-                query.selected_columns  # type: ignore
+                MockTable(query.selected_columns)
             )
         ).limit(self.limit)
 

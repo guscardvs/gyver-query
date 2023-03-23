@@ -1,18 +1,15 @@
-from functools import wraps
 import typing
-from datetime import date
-from datetime import time
-import typing_extensions
+from datetime import date, time
+from functools import wraps
 
 import sqlalchemy as sa
-from sqlalchemy.sql import Delete
-from sqlalchemy.sql import Select
-from sqlalchemy.sql import Update
-from sqlalchemy.sql.elements import BooleanClauseList
-from sqlalchemy.sql.elements import ColumnElement
+import typing_extensions
+from gyver.database.entity import AbstractEntity
+from sqlalchemy.sql import Delete, Select, Update
+from sqlalchemy.sql.elements import BooleanClauseList, ColumnElement
 from sqlalchemy.sql.functions import Function
 
-from gyver.database.entity import AbstractEntity
+from ._helpers import MockTable
 from .typedef import ClauseType
 
 P = typing_extensions.ParamSpec("P")
@@ -20,22 +17,18 @@ P = typing_extensions.ParamSpec("P")
 ExecutableType = typing.Union[Select, Update, Delete]
 ExecutableT = typing.TypeVar("ExecutableT", bound=ExecutableType)
 Sortable = typing.Union[int, float, date, time]
-Comparison = typing.Union[
-    ColumnElement[sa.Boolean], BooleanClauseList, Function
-]
+Comparison = typing.Union[ColumnElement[sa.Boolean], BooleanClauseList, Function]
 SaComparison = ColumnElement[bool]
 FieldType = typing.Union[ColumnElement, sa.Column]
 T = typing.TypeVar("T", contravariant=True)
-Mapper = typing.Union[sa.Table, type[AbstractEntity]]
+Mapper = typing.Union[sa.Table, type[AbstractEntity], MockTable]
 
 
 def cast_comp(comp: Comparison) -> SaComparison:
     return typing.cast(typing.Any, comp)
 
 
-def as_comp(
-    func: typing.Callable[P, Comparison]
-) -> typing.Callable[P, SaComparison]:
+def as_comp(func: typing.Callable[P, Comparison]) -> typing.Callable[P, SaComparison]:
     @wraps(func)
     def inner(*args: P.args, **kwargs: P.kwargs) -> SaComparison:
         return cast_comp(func(*args, **kwargs))

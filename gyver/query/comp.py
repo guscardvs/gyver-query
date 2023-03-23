@@ -2,7 +2,6 @@ import typing
 
 import sqlalchemy as sa
 
-
 from . import interface
 
 
@@ -13,9 +12,7 @@ def always_true(
     return sa.true()
 
 
-def equals(
-    field: interface.FieldType, target: typing.Any
-) -> interface.SaComparison:
+def equals(field: interface.FieldType, target: typing.Any) -> interface.SaComparison:
     return field == target
 
 
@@ -80,9 +77,7 @@ def llike(field: interface.FieldType, target: str) -> interface.SaComparison:
 def insensitive_like(
     opt: typing.Literal["like", "rlike", "llike"] = "like"
 ) -> interface.Comparator[str]:
-    fmt = {"like": "%{target}%", "rlike": "%{target}", "llike": "{target}%"}[
-        opt
-    ]
+    fmt = {"like": "%{target}%", "rlike": "%{target}", "llike": "{target}%"}[opt]
 
     def comparator(field: interface.FieldType, target: str):
         return field.ilike(fmt.format(target=target))
@@ -128,8 +123,7 @@ def make_relation_check(
         comp = clause.bind(field.class_)
         func = (
             field.has
-            if field.property.direction.name.lower()
-            not in ("onetomany", "manytomany")
+            if field.property.direction.name.lower() not in ("onetomany", "manytomany")
             else field.any
         )
         result = func() if str(comp) == str(sa.true()) else func(comp)
